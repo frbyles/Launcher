@@ -231,6 +231,52 @@ app.post('/api/kill-all', (req, res) => {
   res.json({ success: true, message: 'All processes killed' });
 });
 
+app.post('/api/pick-folder', (req, res) => {
+  let pickerCmd = '';
+  let args = [];
+
+  if (process.platform === 'win32') {
+    pickerCmd = 'powershell.exe';
+    args = [
+      '-Command',
+      `Add-Type -AssemblyName System.Windows.Forms; $dialog = New-Object System.Windows.Forms.FolderBrowserDialog; if ($dialog.ShowDialog() -eq 'OK') { $dialog.SelectedPath }`
+    ];
+  } else if (process.platform === 'darwin') {
+    pickerCmd = 'osascript';
+    args = [
+      '-e',
+      'tell application "Finder"\nset folderPath to (choose folder) as text\nlog POSIX path of folderPath\nend tell'
+    ];
+  } else {
+    pickerCmd = 'zenity';
+    args = ['--file-selection', '--directory'];
+  }
+
+  const proc = spawn(pickerCmd, args, { stdio: ['pipe', 'pipe', 'pipe'] });
+  let output = '';
+  let error = '';
+
+  proc.stdout.on('data', (data) => {
+    output += data.toString().trim();
+  });
+
+  proc.stderr.on('data', (data) => {
+    error += data.toString();
+  });
+
+  proc.on('close', (code) => {
+    if (code === 0 && output) {
+      let folderPath = output.split('\n').filter(line => line.trim())[0];
+      if (process.platform === 'darwin') {
+        folderPath = folderPath.replace(/file:\/\//, '');
+      }
+      res.json({ success: true, path: folderPath });
+    } else {
+      res.json({ success: false, message: 'No folder selected' });
+    }
+  });
+});
+
 app.listen(port, () => {
   console.log(`\n🚀 Launcher running at http://localhost:${port}\n`);
 });
