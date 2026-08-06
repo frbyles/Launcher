@@ -87,29 +87,52 @@ Open browser to: **http://localhost:5000**
 
 ## Configuration
 
-Edit `server.js` to set your models folder:
+### Models Folder
+
+1. Open the launcher at **http://localhost:5000**
+2. In the "Models Folder" section, enter your models directory path:
+   - Windows example: `C:\Users\YourName\models`
+   - Linux example: `/home/user/models`
+3. The launcher will automatically scan for GGUF files
+
+### Project Paths
+
+Edit `server.js` lines 71-105 to set your project directories if needed:
 
 ```javascript
-const modelsDir = '/your/path/to/models'; // Change this path
+const projects = {
+  llamacpp: {
+    dir: '/your/path/to/llama.cpp-fable5', // Update this
+    // ...
+  },
+  pithagoras: {
+    dir: '/your/path/to/pithagoras', // Update this
+    // ...
+  }
+  // etc.
+};
 ```
-
-Then restart the launcher.
 
 ## Usage
 
-1. **Select Model**
-   - Choose from dropdown (auto-scans your configured models folder)
+1. **Set Models Folder**
+   - Enter your models directory path in the "Models Folder" section
+   - The dropdown will auto-populate with available GGUF models
    - Supports multi-part GGUF files (shows first part)
 
-2. **Add Flags** (optional)
+2. **Select Model**
+   - Choose from the "Available Models" dropdown
+   - Model path is automatically saved
+
+3. **Add Flags** (optional)
    - Example: `-ngl 99 --n-cpu-moe 40 -c 65536 -ctk q8_0 -ctv q8_0`
    - Flags auto-pass to llama-server on start
 
-3. **Start Projects**
+4. **Start Projects**
    - Click "Start" button on any project
    - Status updates in real-time
 
-4. **Access Running Projects**
+5. **Access Running Projects**
    - Click "Open" button to access in browser
    - Projects run on default ports (see UI)
 
@@ -129,11 +152,11 @@ Then restart the launcher.
 - Or: `netstat -ano | findstr :8000` (Windows, then Task Manager to kill)
 
 **Models not showing**
-- Check your models folder path is correct in `server.js`
-- Make sure the folder exists and has read permissions
+- Enter the correct models folder path in the UI
+- Make sure the folder exists and is readable
 - Models must be in GGUF format (.gguf files)
 - Multi-part models (00001-of-00003) show as single entry
-- Restart launcher after changing the path
+- Models list updates automatically after setting the folder path
 
 **Launcher won't start**
 - Make sure Node.js is installed: `node --version`

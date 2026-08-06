@@ -10,8 +10,9 @@ const app = express();
 const port = 5000;
 
 function getAvailableModels() {
-  // CONFIGURE THIS PATH - Point to your models folder
-  const modelsDir = '/home/roger/models';
+  const modelsDir = config.modelsDir;
+  if (!modelsDir) return [];
+
   try {
     const models = [];
 
@@ -111,7 +112,8 @@ const config = {
   apiKey: '',
   localModelEndpoint: 'http://localhost:8000/v1',
   selectedModel: null,
-  customFlags: ''
+  customFlags: '',
+  modelsDir: ''
 };
 
 app.use(express.json());
