@@ -273,9 +273,134 @@
       background: #f8d7da;
       color: #721c24;
     }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal.show {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-content h2 {
+      color: #333;
+      margin-bottom: 15px;
+      font-size: 1.5em;
+    }
+
+    .modal-content p {
+      color: #666;
+      margin-bottom: 25px;
+      font-size: 1em;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .modal-buttons button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.95em;
+    }
+
+    .btn-yes {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn-yes:hover {
+      background: #c82333;
+    }
+
+    .btn-no {
+      background: #6c757d;
+      color: white;
+    }
+
+    .btn-no:hover {
+      background: #5a6268;
+    }
+
+    .kill-all-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+      transition: all 0.2s;
+      z-index: 100;
+    }
+
+    .kill-all-btn:hover {
+      background: #c82333;
+      box-shadow: 0 6px 16px rgba(220, 53, 69, 0.4);
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
+  <div id="killAllModal" class="modal">
+    <div class="modal-content">
+      <h2>⚠️ Kill All Processes?</h2>
+      <p>This will stop all running projects. Are you sure?</p>
+      <div class="modal-buttons">
+        <button class="btn-no" onclick="closeKillAllModal()">Cancel</button>
+        <button class="btn-yes" onclick="confirmKillAll()">Yes, Kill All</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="kill-all-btn" onclick="openKillAllModal()">🛑 Kill All</button>
+
   <div class="container">
     <div class="header">
       <h1>🚀 Project Launcher</h1>
@@ -547,6 +672,29 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ customFlags: flags })
       });
+    }
+
+    function openKillAllModal() {
+      document.getElementById('killAllModal').classList.add('show');
+    }
+
+    function closeKillAllModal() {
+      document.getElementById('killAllModal').classList.remove('show');
+    }
+
+    async function confirmKillAll() {
+      const res = await fetch('/api/kill-all', { method: 'POST' });
+      const data = await res.json();
+      closeKillAllModal();
+      showMessage('config', '✓ All processes killed', 'success', true);
+      setTimeout(loadProjects, 500);
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('killAllModal');
+      if (event.target === modal) {
+        closeKillAllModal();
+      }
     }
 
     loadModels();

@@ -223,6 +223,14 @@ app.post('/api/stop/:id', (req, res) => {
   res.json({ success: true, message: 'Stopping...' });
 });
 
+app.post('/api/kill-all', (req, res) => {
+  Object.entries(processes).forEach(([id, proc]) => {
+    proc.kill('SIGTERM');
+    console.log(`Killed process: ${id}`);
+  });
+  res.json({ success: true, message: 'All processes killed' });
+});
+
 app.listen(port, () => {
   console.log(`\n🚀 Launcher running at http://localhost:${port}\n`);
 });
