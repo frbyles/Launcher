@@ -445,12 +445,8 @@
         <div class="config-row">
           <div class="config-field" style="flex: 2;">
             <label>Models Directory Path</label>
-            <div style="display: flex; gap: 10px;">
-              <input type="text" id="modelsDir" placeholder="e.g., C:\models or /home/user/models" onchange="saveModelsDir()" style="flex: 1;">
-              <button onclick="browseModelsFolder()" class="save-config" style="flex: 0.3; white-space: nowrap;">Browse</button>
-              <input type="file" id="folderPicker" webkitdirectory directory style="display: none;">
-            </div>
-            <div style="font-size: 0.85em; color: #999; margin-top: 5px;">Point to a folder containing your GGUF model files</div>
+            <input type="text" id="modelsDir" placeholder="e.g., C:\models or /home/user/models" onchange="saveModelsDir()" onkeypress="if(event.key==='Enter') saveModelsDir()">
+            <div style="font-size: 0.85em; color: #999; margin-top: 5px;">Paste or type your folder path, then press Enter</div>
           </div>
           <div id="modelsDirStatus" style="flex: 1; padding: 12px; background: #f5f5f5; border-radius: 6px; color: #666; font-size: 0.9em; text-align: center;">
             No folder selected
@@ -700,23 +696,6 @@
         closeKillAllModal();
       }
     }
-
-    function browseModelsFolder() {
-      const picker = document.getElementById('folderPicker');
-      picker.click();
-    }
-
-    document.getElementById('folderPicker').addEventListener('change', function(e) {
-      if (e.target.files && e.target.files.length > 0) {
-        const firstFile = e.target.files[0];
-        const filePath = firstFile.webkitRelativePath || firstFile.name;
-        const folderPath = filePath.substring(0, filePath.lastIndexOf('/'));
-        if (folderPath) {
-          document.getElementById('modelsDir').value = folderPath;
-          saveModelsDir();
-        }
-      }
-    });
 
     loadModels();
     loadConfig();
