@@ -445,8 +445,12 @@
         <div class="config-row">
           <div class="config-field" style="flex: 2;">
             <label>Models Directory Path</label>
-            <input type="text" id="modelsDir" placeholder="e.g., C:\models or /home/user/models" onchange="saveModelsDir()" onkeypress="if(event.key==='Enter') saveModelsDir()">
-            <div style="font-size: 0.85em; color: #999; margin-top: 5px;">Paste or type your folder path, then press Enter</div>
+            <div style="display: flex; gap: 10px;">
+              <input type="text" id="modelsDir" placeholder="e.g., C:\models or /home/user/models" onchange="saveModelsDir()" onkeypress="if(event.key==='Enter') saveModelsDir()" style="flex: 1;">
+              <button onclick="document.getElementById('folderPicker').click()" class="save-config" style="flex: 0.3; white-space: nowrap;">Browse</button>
+              <input type="file" id="folderPicker" webkitdirectory mozdirectory style="display: none;">
+            </div>
+            <div style="font-size: 0.85em; color: #999; margin-top: 5px;">Click Browse to select folder or paste/type path and press Enter</div>
           </div>
           <div id="modelsDirStatus" style="flex: 1; padding: 12px; background: #f5f5f5; border-radius: 6px; color: #666; font-size: 0.9em; text-align: center;">
             No folder selected
@@ -696,6 +700,19 @@
         closeKillAllModal();
       }
     }
+
+    document.getElementById('folderPicker').addEventListener('change', function(e) {
+      if (e.target.files && e.target.files.length > 0) {
+        const firstFile = e.target.files[0];
+        const webkitPath = firstFile.webkitRelativePath;
+
+        if (webkitPath) {
+          let folderPath = webkitPath.split('/')[0];
+          document.getElementById('modelsDir').value = folderPath;
+          saveModelsDir();
+        }
+      }
+    });
 
     loadModels();
     loadConfig();
