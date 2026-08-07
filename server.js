@@ -73,8 +73,8 @@ const projects = {
   llamacpp: {
     name: 'Llama.cpp Server (Fable5)',
     port: 8000,
-    dir: '/home/roger/llama.cpp-fable5',
-    cmd: './build/bin/llama-server',
+    dir: 'C:\\Users\\Mud loggit\\llama.cpp\\build\\bin',
+    cmd: 'llama-server.exe',
     args: ['-p', '8000', '--host', '127.0.0.1'],
     url: 'http://localhost:8000',
     isEngine: true
@@ -82,7 +82,7 @@ const projects = {
   pithagoras: {
     name: 'Pithagoras',
     port: 4100,
-    dir: '/home/roger/pithagoras',
+    dir: 'C:\\Users\\Mud loggit\\pithagoras',
     cmd: 'npm',
     args: ['run', 'dev:server'],
     url: 'http://localhost:4100'
@@ -90,7 +90,7 @@ const projects = {
   understory: {
     name: 'Understory',
     port: 3800,
-    dir: '/home/roger/understory',
+    dir: 'C:\\Users\\Mud loggit\\understory',
     cmd: 'pnpm',
     args: ['dev'],
     url: 'http://localhost:3800'
@@ -98,7 +98,7 @@ const projects = {
   agentbox: {
     name: 'AgentBox',
     port: 3000,
-    dir: '/home/roger/agentbox/app',
+    dir: 'C:\\Users\\Mud loggit\\agentbox\\app',
     cmd: 'npm',
     args: ['run', 'dev'],
     url: 'http://localhost:3000'
