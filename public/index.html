@@ -701,11 +701,20 @@
     }
 
     async function pickFolder() {
-      const res = await fetch('/api/pick-folder', { method: 'POST' });
-      const data = await res.json();
-      if (data.success && data.path) {
-        document.getElementById('modelsDir').value = data.path;
-        saveModelsDir();
+      const btn = event.target;
+      const originalText = btn.textContent;
+      btn.textContent = 'Opening...';
+      btn.disabled = true;
+      try {
+        const res = await fetch('/api/pick-folder', { method: 'POST' });
+        const data = await res.json();
+        if (data.success && data.path) {
+          document.getElementById('modelsDir').value = data.path;
+          saveModelsDir();
+        }
+      } finally {
+        btn.textContent = originalText;
+        btn.disabled = false;
       }
     }
 

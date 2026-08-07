@@ -238,8 +238,9 @@ app.post('/api/pick-folder', (req, res) => {
   if (process.platform === 'win32') {
     pickerCmd = 'powershell.exe';
     args = [
+      '-NoProfile',
       '-Command',
-      `Add-Type -AssemblyName System.Windows.Forms; $dialog = New-Object System.Windows.Forms.FolderBrowserDialog; if ($dialog.ShowDialog() -eq 'OK') { $dialog.SelectedPath }`
+      `Add-Type -AssemblyName System.Windows.Forms; $f = New-Object System.Windows.Forms.Form; $f.TopMost = $true; $f.WindowState = 'Minimized'; $f.ShowInTaskbar = $false; $f.Show(); $dialog = New-Object System.Windows.Forms.FolderBrowserDialog; if ($dialog.ShowDialog($f) -eq 'OK') { $dialog.SelectedPath }; $f.Close()`
     ];
   } else if (process.platform === 'darwin') {
     pickerCmd = 'osascript';
